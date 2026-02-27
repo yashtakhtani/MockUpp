@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Disney — Where Magic Lives</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-inner">
+            <div class="loader-castle">
+                <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round">
+                        <rect x="80" y="100" width="40" height="60" rx="2" />
+                        <rect x="60" y="115" width="25" height="45" rx="2" />
+                        <rect x="115" y="115" width="25" height="45" rx="2" />
+                        <rect x="42" y="125" width="18" height="35" rx="2" />
+                        <rect x="140" y="125" width="18" height="35" rx="2" />
+                        <polygon points="100,30 80,100 120,100" />
+                        <polygon points="72,65 60,115 85,115" />
+                        <polygon points="128,65 115,115 140,115" />
+                        <polygon points="51,80 42,125 60,125" />
+                        <polygon points="149,80 140,125 158,125" />
+                        <line x1="80" y1="95" x2="75" y2="75" />
+                        <line x1="120" y1="95" x2="125" y2="75" />
+                        <rect x="90" y="135" width="20" height="25" rx="10" />
+                    </g>
+                </svg>
+            </div>
+            <div class="loader-text">
+                <span>W</span><span>H</span><span>E</span><span>R</span><span>E</span>
+                <span>&nbsp;</span>
+                <span>M</span><span>A</span><span>G</span><span>I</span><span>C</span>
+                <span>&nbsp;</span>
+                <span>L</span><span>I</span><span>V</span><span>E</span><span>S</span>
+            </div>
+            <div class="loader-bar">
+                <div class="loader-progress" id="loaderProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-logo">
+            <svg viewBox="0 0 120 40" class="disney-wordmark">
+                <text x="5" y="32" font-family="Cinzel Decorative, serif" font-size="26" fill="url(#goldGrad)"
+                    font-weight="700">Disney</text>
+                <defs>
+                    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#C9A84C" />
+                        <stop offset="50%" stop-color="#F5E6A3" />
+                        <stop offset="100%" stop-color="#C9A84C" />
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#worlds" class="nav-link" data-section="worlds">Worlds</a></li>
+            <li><a href="#stories" class="nav-link" data-section="stories">Stories</a></li>
+            <li><a href="#characters" class="nav-link" data-section="characters">Characters</a></li>
+            <li><a href="#experience" class="nav-link" data-section="experience">Experience</a></li>
+        </ul>
+        <button class="nav-cta">Enter Magic</button>
+        <div class="nav-menu-toggle" id="menuToggle">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <canvas id="threeCanvas"></canvas>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <p class="hero-tagline" id="heroTagline">Once upon a time…</p>
+            <h1 class="hero-title" id="heroTitle">
+                <span class="title-line">Your Story</span>
+                <span class="title-line title-italic">Awaits</span>
+            </h1>
+            <p class="hero-sub" id="heroSub">Step into a world where every click opens a new chapter, every scroll
+                reveals wonder, and every moment is pure magic.</p>
+            <div class="hero-cta-group">
+                <button class="btn-primary" id="beginJourney">Begin Your Journey</button>
+                <button class="btn-ghost" id="exploreBtn">Watch the Story</button>
+            </div>
+        </div>
+
+        <div class="scroll-hint">
+            <span>Scroll to explore</span>
+            <div class="scroll-line"></div>
+        </div>
+
+        <!-- Floating Sparkles -->
+        <div class="sparkles-container" id="sparkles"></div>
+    </section>
+
+    <!-- World Selector — Unique Attraction: Interactive Portal -->
+    <section class="worlds" id="worlds">
+        <div class="section-header">
+            <p class="section-label">Choose Your Realm</p>
+            <h2 class="section-title">Infinite Worlds</h2>
+        </div>
+        <div class="worlds-portal-container">
+            <div class="portal-ring ring-1"></div>
+            <div class="portal-ring ring-2"></div>
+            <div class="portal-ring ring-3"></div>
+            <div class="portal-center" id="portalCenter">
+                <div class="portal-preview" id="portalPreview">
+                    <p>Hover a world</p>
+                </div>
+            </div>
+            <div class="worlds-orbit" id="worldsOrbit">
+                <div class="world-card" data-world="fantasy" data-color="#4A90D9"
+                    data-desc="Where castles touch clouds and fairy godmothers make dreams real." style="--angle:0deg">
+                    <div class="world-icon">🏰</div>
+                    <span>Fantasy</span>
+                </div>
+                <div class="world-card" data-world="adventure" data-color="#E8A838"
+                    data-desc="Uncharted jungles, wild seas, and heroes who never give up." style="--angle:60deg">
+                    <div class="world-icon">⚔️</div>
+                    <span>Adventure</span>
+                </div>
+                <div class="world-card" data-world="space" data-color="#8B5CF6"
+                    data-desc="Galaxies far away, rebel alliances, and the force within you." style="--angle:120deg">
+                    <div class="world-icon">🚀</div>
+                    <span>Cosmos</span>
+                </div>
+                <div class="world-card" data-world="ocean" data-color="#06B6D4"
+                    data-desc="Deep below the surface, a whole world is waiting to be discovered."
+                    style="--angle:180deg">
+                    <div class="world-icon">🌊</div>
+                    <span>Ocean</span>
+                </div>
+                <div class="world-card" data-world="wild" data-color="#22C55E"
+                    data-desc="The circle of life turns in lands ancient and alive with spirit." style="--angle:240deg">
+                    <div class="world-icon">🦁</div>
+                    <span>Wild</span>
+                </div>
+                <div class="world-card" data-world="wonder" data-color="#F43F5E"
+                    data-desc="Down the rabbit hole, through the looking glass, to the impossible."
+                    style="--angle:300deg">
+                    <div class="world-icon">✨</div>
+                    <span>Wonder</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Story Timeline -->
+    <section class="stories" id="stories">
+        <div class="stories-bg-canvas" id="storiesBg"></div>
+        <div class="section-header">
+            <p class="section-label">Living Legends</p>
+            <h2 class="section-title">The Greatest Stories</h2>
+        </div>
+        <div class="stories-track-container">
+            <div class="stories-track" id="storiesTrack">
+
+                <div class="story-card" data-hue="220">
+                    <div class="story-visual">
+                        <div class="story-glyph">🌹</div>
+                    </div>
+                    <div class="story-body">
+                        <span class="story-year">1991</span>
+                        <h3 class="story-name">Beauty & The Beast</h3>
+                        <p class="story-excerpt">A tale as old as time — love beyond appearances, where enchantment
+                            hides in every petal.</p>
+                        <button class="story-enter">Enter Tale →</button>
+                    </div>
+                    <div class="story-particles"></div>
+                </div>
+
+                <div class="story-card" data-hue="280">
+                    <div class="story-visual">
+                        <div class="story-glyph">🧞</div>
+                    </div>
+                    <div class="story-body">
+                        <span class="story-year">1992</span>
+                        <h3 class="story-name">Aladdin</h3>
+                        <p class="story-excerpt">A whole new world shines before you — magic carpet rides across
+                            kingdoms of gold.</p>
+                        <button class="story-enter">Enter Tale →</button>
+                    </div>
+                    <div class="story-particles"></div>
+                </div>
+
+                <div class="story-card" data-hue="160">
+                    <div class="story-visual">
+                        <div class="story-glyph">🦁</div>
+                    </div>
+                    <div class="story-body">
+                        <span class="story-year">1994</span>
+                        <h3 class="story-name">The Lion King</h3>
+                        <p class="story-excerpt">Everything the light touches is your kingdom. Remember who you are.</p>
+                        <button class="story-enter">Enter Tale →</button>
+                    </div>
+                    <div class="story-particles"></div>
+                </div>
+
+                <div class="story-card" data-hue="200">
+                    <div class="story-visual">
+                        <div class="story-glyph">🐠</div>
+                    </div>
+                    <div class="story-body">
+                        <span class="story-year">2003</span>
+                        <h3 class="story-name">Finding Nemo</h3>
+                        <p class="story-excerpt">Just keep swimming. The entire ocean separates them, but love finds a
+                            way.</p>
+                        <button class="story-enter">Enter Tale →</button>
+                    </div>
+                    <div class="story-particles"></div>
+                </div>
+
+                <div class="story-card" data-hue="240">
+                    <div class="story-visual">
+                        <div class="story-glyph">❄️</div>
+                    </div>
+                    <div class="story-body">
+                        <span class="story-year">2013</span>
+                        <h3 class="story-name">Frozen</h3>
+                        <p class="story-excerpt">Let it go — an act of true love can thaw even a frozen heart.</p>
+                        <button class="story-enter">Enter Tale →</button>
+                    </div>
+                    <div class="story-particles"></div>
+                </div>
+
+                <div class="story-card" data-hue="320">
+                    <div class="story-visual">
+                        <div class="story-glyph">🌺</div>
+                    </div>
+                    <div class="story-body">
+                        <span class="story-year">2016</span>
+                        <h3 class="story-name">Moana</h3>
+                        <p class="story-excerpt">The ocean chose her. How far she'll go is only the beginning of the
+                            legend.</p>
+                        <button class="story-enter">Enter Tale →</button>
+                    </div>
+                    <div class="story-particles"></div>
+                </div>
+
+            </div>
+            <div class="track-nav">
+                <button class="track-btn" id="trackPrev">←</button>
+                <div class="track-dots" id="trackDots"></div>
+                <button class="track-btn" id="trackNext">→</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Characters Section -->
+    <section class="characters" id="characters">
+        <div class="section-header">
+            <p class="section-label">Your Guides</p>
+            <h2 class="section-title">Beloved Characters</h2>
+        </div>
+        <div class="char-grid">
+            <div class="char-card" data-char="mickey">
+                <div class="char-aura"></div>
+                <div class="char-emoji">🐭</div>
+                <div class="char-info">
+                    <h3>Mickey Mouse</h3>
+                    <p>The heart of Disney. Optimistic, brave, and forever magical.</p>
+                    <div class="char-quote">"All our dreams can come true."</div>
+                </div>
+                <div class="char-shimmer"></div>
+            </div>
+            <div class="char-card featured" data-char="elsa">
+                <div class="char-aura"></div>
+                <div class="char-emoji">👸</div>
+                <div class="char-info">
+                    <h3>Elsa</h3>
+                    <p>Queen of ice and storms — discovering power means embracing your true self.</p>
+                    <div class="char-quote">"The cold never bothered me anyway."</div>
+                </div>
+                <div class="char-shimmer"></div>
+            </div>
+            <div class="char-card" data-char="simba">
+                <div class="char-aura"></div>
+                <div class="char-emoji">🦁</div>
+                <div class="char-info">
+                    <h3>Simba</h3>
+                    <p>Heir to the Pride Lands. A prince who must become a king.</p>
+                    <div class="char-quote">"Remember who you are."</div>
+                </div>
+                <div class="char-shimmer"></div>
+            </div>
+            <div class="char-card" data-char="moana">
+                <div class="char-aura"></div>
+                <div class="char-emoji">🌊</div>
+                <div class="char-info">
+                    <h3>Moana</h3>
+                    <p>Chosen by the ocean itself to restore the heart of Te Fiti.</p>
+                    <div class="char-quote">"I am Moana of Motunui."</div>
+                </div>
+                <div class="char-shimmer"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Magic Experience Bar — Unique Feature: Gamified Exploration -->
+    <section class="experience" id="experience">
+        <div class="exp-container">
+            <div class="exp-left">
+                <p class="section-label">Your Magic</p>
+                <h2 class="section-title">Explore & Earn</h2>
+                <p class="exp-desc">Every world you visit, every story you explore — earns you magic dust. Unlock hidden
+                    realms and exclusive experiences.</p>
+                <div class="magic-meter">
+                    <div class="magic-label">
+                        <span>Magic Level</span>
+                        <span id="magicCount">0 / 100</span>
+                    </div>
+                    <div class="magic-bar">
+                        <div class="magic-fill" id="magicFill"></div>
+                        <div class="magic-glow"></div>
+                    </div>
+                </div>
+                <div class="achievements" id="achievements">
+                    <div class="achievement locked" data-req="10">🌟 <span>First Spark</span></div>
+                    <div class="achievement locked" data-req="30">🏰 <span>Castle Explorer</span></div>
+                    <div class="achievement locked" data-req="60">🌊 <span>Ocean Wanderer</span></div>
+                    <div class="achievement locked" data-req="100">✨ <span>True Believer</span></div>
+                </div>
+            </div>
+            <div class="exp-right">
+                <div class="magic-orb" id="magicOrb">
+                    <div class="orb-inner">
+                        <div class="orb-text" id="orbText">Click to collect magic!</div>
+                    </div>
+                    <div class="orb-ring r1"></div>
+                    <div class="orb-ring r2"></div>
+                    <div class="orb-ring r3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parks & Streaming CTA -->
+    <section class="cta-section">
+        <div class="cta-grid">
+            <div class="cta-card parks">
+                <div class="cta-bg"></div>
+                <div class="cta-content">
+                    <span class="cta-icon">🎢</span>
+                    <h3>Theme Parks</h3>
+                    <p>Step beyond the screen. Our parks are worlds made real — where stories live, breathe, and never
+                        end.</p>
+                    <button class="btn-primary">Explore Parks</button>
+                </div>
+            </div>
+            <div class="cta-card streaming">
+                <div class="cta-bg"></div>
+                <div class="cta-content">
+                    <span class="cta-icon">▶</span>
+                    <h3>Disney+</h3>
+                    <p>Every movie, every series, every moment of magic — streaming endlessly, just for you.</p>
+                    <button class="btn-primary">Start Streaming</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-castle">
+            <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                <g fill="none" stroke="rgba(201,168,76,0.3)" stroke-width="1" stroke-linecap="round">
+                    <rect x="160" y="80" width="80" height="100" rx="3" />
+                    <rect x="120" y="100" width="50" height="80" rx="3" />
+                    <rect x="230" y="100" width="50" height="80" rx="3" />
+                    <rect x="85" y="120" width="40" height="60" rx="3" />
+                    <rect x="275" y="120" width="40" height="60" rx="3" />
+                    <polygon points="200,10 160,80 240,80" />
+                    <polygon points="145,45 120,100 170,100" />
+                    <polygon points="255,45 230,100 280,100" />
+                    <polygon points="105,70 85,120 125,120" />
+                    <polygon points="295,70 275,120 315,120" />
+                    <rect x="180" y="120" width="40" height="60" rx="20" />
+                </g>
+            </svg>
+        </div>
+        <div class="footer-content">
+            <div class="footer-logo">Disney</div>
+            <p class="footer-tagline">Where every story begins with a dream.</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Accessibility</a>
+                <a href="#">Contact</a>
+            </div>
+            <p class="footer-copy">© 2024 The Walt Disney Company. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Story Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
